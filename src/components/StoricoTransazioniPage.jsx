@@ -1,0 +1,333 @@
+// pages/StoricoTransazioniPage.jsx
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Clock, ArrowUpRight, ArrowDownLeft, RefreshCw, CheckCircle, XCircle, AlertCircle, Search, Filter } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import DashboardHeader from './DashboardHeader';
+import BottomNavigation from './BottomNavigation';
+import  UserService  from '../services/UserService';
+
+const StoricoTransazioniPage = () => {
+  const navigate = useNavigate();
+  const [transactions, setTransactions] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState('Tutti');
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = UserService.getCurrentUser();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setCurrentUser(user);
+    loadTransactions(user.id);
+    loadStats(user.id);
+  }, [navigate]);
+
+  const loadTransactions = async (userId) => {
+    setLoading(true);
+    try {
+      const data = await UserService.getUserTransactions(userId);
+      setTransactions(data);
+    } catch (error) {
+      console.error('Errore caricamento transazioni:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadStats = async (userId) => {
+    try {
+      const data = await UserService.getTransactionStats(userId);
+      setStats(data);
+    } catch (error) {
+      console.error('Errore caricamento statistiche:', error);
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!currentUser) return;
+    
+    if (searchTerm.trim() === '') {
+      loadTransactions(currentUser.id);
+    } else {
+      setLoading(true);
+      try {
+        const results = await UserService.searchTransactions(currentUser.id, searchTerm);
+        setTransactions(results);
+      } catch (error) {
+        console.error('Errore ricerca:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const getTransactionIcon = (type) => {
+    switch(type) {
+      case 'Invio': 
+        return <ArrowUpRight size={24} className="text-red-600" />;
+      case 'Ricezione': 
+        return <ArrowDownLeft size={24} className="text-green-600" />;
+      case 'Prelievo': 
+        return <ArrowUpRight size={24} className="text-orange-600" />;
+      case 'Deposito': 
+        return <ArrowDownLeft size={24} className="text-blue-600" />;
+      case 'Trasferimento conto': 
+        return <RefreshCw size={24} className="text-purple-600" />;
+      default: 
+        return <RefreshCw size={24} className="text-gray-600" />;
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  const formatAmount = (amount, currency = '€') => {
+    return new Intl.NumberFormat('it-IT', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount) + ' ' + currency;
+  };
+
+  const filteredTransactions = transactions.filter(t => {
+    if (filterType === 'Tutti') return true;
+    return t.type === filterType;
+  });
+
+  if (loading && transactions.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw size={48} className="text-blue-900 animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Caricamento transazioni...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <DashboardHeader />
+      
+      <div className="p-4 max-w-4xl mx-auto">
+        <button 
+          onClick={() => navigate('/dashboard')} 
+          className="flex items-center text-blue-900 mb-6 hover:text-blue-700 transition"
+        >
+          <ArrowLeft size={20} className="mr-2" />
+          <span className="font-medium">Indietro</span>
+        </button>
+
+        {/* Intestazione */}
+        <div className="bg-blue-900 rounded-lg shadow-md p-6 text-white mb-6">
+          <div className="flex items-center">
+            <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-4">
+              <Clock size={32} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold">Storico Transazioni</h1>
+              <p className="text-blue-100 text-sm mt-1">Tutte le tue operazioni bancarie</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Statistiche */}
+        {stats && (
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Completate</p>
+                  <p className="text-2xl font-bold text-green-600 mt-1">{stats.reussies}</p>
+                </div>
+                <CheckCircle size={32} className="text-green-600" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Fallite</p>
+                  <p className="text-2xl font-bold text-red-600 mt-1">{stats.echouees}</p>
+                </div>
+                <XCircle size={32} className="text-red-600" />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Barra ricerca e filtro */}
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+          <div className="flex gap-2 mb-3">
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                placeholder="Cerca una transazione..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
+            <button
+              onClick={handleSearch}
+              className="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+            >
+              <Search size={20} />
+            </button>
+          </div>
+
+          {/* Filtri */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2">
+            <Filter size={18} className="text-gray-600" />
+            {['Tutti', 'Invio', 'Ricezione', 'Prelievo', 'Deposito', 'Trasferimento conto'].map((type) => (
+              <button
+                key={type}
+                onClick={() => setFilterType(type)}
+                className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap transition ${
+                  filterType === type
+                    ? 'bg-blue-900 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Avviso sicurezza */}
+        {stats && stats.echouees > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div className="flex items-start">
+              <AlertCircle className="text-yellow-600 mr-3 mt-0.5" size={20} />
+              <div>
+                <h3 className="font-semibold text-yellow-900 mb-1">⚠️ Attenzione</h3>
+                <p className="text-sm text-yellow-800">
+                  {stats.echouees} transazione/i fallita/e. Verifica i tuoi dati o contatta il supporto.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Lista transazioni */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-800">
+              {filteredTransactions.length} transazione/i
+            </h2>
+            <button
+              onClick={() => loadTransactions(currentUser?.id)}
+              className="text-blue-900 hover:text-blue-700 transition"
+            >
+              <RefreshCw size={20} />
+            </button>
+          </div>
+          
+          {filteredTransactions.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <AlertCircle size={48} className="mx-auto mb-3 text-gray-300" />
+              <p>Nessuna transazione trovata</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredTransactions.map((transaction) => (
+                <div 
+                  key={transaction.id} 
+                  className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer"
+                  onClick={() => {
+                    alert(`Dettagli transazione\n\nRiferimento: ${transaction.reference}\nImporto: ${formatAmount(transaction.montant, transaction.devise)}\nCommissioni: ${formatAmount(transaction.frais, transaction.devise)}\nConto: ${transaction.accountType}`);
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Icona transazione */}
+                    <div className="mt-1">
+                      {getTransactionIcon(transaction.type)}
+                    </div>
+
+                    {/* Informazioni */}
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="font-semibold text-gray-800">{transaction.type}</p>
+                          <p className="text-sm text-gray-600 mt-1">{transaction.destinataire}</p>
+                          {transaction.numeroDestinataire && (
+                            <p className="text-xs text-gray-500 mt-0.5">{transaction.numeroDestinataire}</p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-lg font-bold ${
+                            transaction.type === 'Ricezione' || transaction.type === 'Deposito'
+                              ? 'text-green-600'
+                              : 'text-red-600'
+                          }`}>
+                            {transaction.type === 'Ricezione' || transaction.type === 'Deposito' ? '+' : '-'}
+                            {formatAmount(transaction.montant, transaction.devise)}
+                          </p>
+                          {transaction.frais > 0 && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Commissioni: {formatAmount(transaction.frais, transaction.devise)}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-sm mt-2 pt-2 border-t border-gray-100">
+                        <div className="flex items-center text-gray-500">
+                          <Clock size={14} className="mr-1" />
+                          {formatDate(transaction.date)} alle {transaction.heure}
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          transaction.statut === 'Completata' 
+                            ? 'bg-green-100 text-green-700' 
+                            : transaction.statut === 'Fallita'
+                            ? 'bg-red-100 text-red-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {transaction.statut}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-gray-400 mt-2">Rif: {transaction.reference}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Azioni */}
+        <div className="mt-6 space-y-3">
+          <button
+            onClick={() => navigate('/bonifico')}
+            className="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition flex items-center justify-center gap-2"
+          >
+            <ArrowUpRight size={20} />
+            Nuova transazione
+          </button>
+          
+          <button
+            onClick={() => {
+              alert('Funzionalità di download estratto conto in sviluppo');
+            }}
+            className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition"
+          >
+            Scarica estratto conto
+          </button>
+        </div>
+      </div>
+
+      <BottomNavigation />
+    </div>
+  );
+};
+
+export default StoricoTransazioniPage;
