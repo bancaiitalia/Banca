@@ -1,9 +1,8 @@
 // App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-// Pages principales
 import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import AgendaPage from './pages/AgendaPage';
@@ -12,12 +11,8 @@ import InterviewsPage from './pages/InterviewsPage';
 import MultimediaPage from './pages/MultimediaPage';
 import IndicatorsPage from './pages/IndicatorsPage';
 import AboutPage from './pages/AboutPage';
-
-// Pages d'authentification
 import LoginPage from './components/LoginPage';
 import RegistrazionePage from './components/RegistrazionePage';
-
-// Pages de l'application bancaire (en italien)
 import DashboardPage from './components/DashboardPage';
 import VirementPage from './components/VirementPage';
 import RetraitPage from './components/RetraitPage';
@@ -29,37 +24,51 @@ import StoricoTransazioniPage from './components/StoricoTransazioniPage';
 import NotificationsPage from './components/NotificationsPage';
 import RibPage from './components/RibPage';
 
+// ✅ PrivateRoute DOIT être dans un composant séparé appelé APRÈS AuthProvider
+const PrivateRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  return user ? children : <Navigate to="/login" replace />;
+};
+
+// ✅ Toutes les routes dans un composant enfant d'AuthProvider
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Routes publiques */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/news" element={<NewsPage />} />
+      <Route path="/agenda" element={<AgendaPage />} />
+      <Route path="/press" element={<PressReleasesPage />} />
+      <Route path="/interviews" element={<InterviewsPage />} />
+      <Route path="/multimedia" element={<MultimediaPage />} />
+      <Route path="/indicators" element={<IndicatorsPage />} />
+      <Route path="/about" element={<AboutPage />} />
+
+      {/* Authentification */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/registrazione" element={<RegistrazionePage />} />
+
+      {/* Routes protégées */}
+      <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+      <Route path="/bonifico" element={<PrivateRoute><VirementPage /></PrivateRoute>} />
+      <Route path="/prelievo" element={<PrivateRoute><RetraitPage /></PrivateRoute>} />
+      <Route path="/carte" element={<PrivateRoute><CartesPage /></PrivateRoute>} />
+      <Route path="/rib" element={<PrivateRoute><RibPage /></PrivateRoute>} />
+      <Route path="/aiuto" element={<PrivateRoute><AidePage /></PrivateRoute>} />
+      <Route path="/conti" element={<PrivateRoute><ComptesPage /></PrivateRoute>} />
+      <Route path="/gestione-documenti" element={<PrivateRoute><GestionDocumentsPage /></PrivateRoute>} />
+      <Route path="/transazioni" element={<PrivateRoute><StoricoTransazioniPage /></PrivateRoute>} />
+      <Route path="/notifications" element={<PrivateRoute><NotificationsPage /></PrivateRoute>} />
+    </Routes>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          {/* Routes publiques */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/agenda" element={<AgendaPage />} />
-          <Route path="/press" element={<PressReleasesPage />} />
-          <Route path="/interviews" element={<InterviewsPage />} />
-          <Route path="/multimedia" element={<MultimediaPage />} />
-          <Route path="/indicators" element={<IndicatorsPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          
-          {/* Authentification */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/registrazione" element={<RegistrazionePage />} />
-          
-          {/* Routes protégées - Application bancaire */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/bonifico" element={<VirementPage />} />
-          <Route path="/prelievo" element={<RetraitPage />} />
-          <Route path="/carte" element={<CartesPage />} />
-          <Route path="/rib" element={<RibPage />} />
-          <Route path="/aiuto" element={<AidePage />} />
-          <Route path="/conti" element={<ComptesPage />} />
-          <Route path="/gestione-documenti" element={<GestionDocumentsPage />} />
-          <Route path="/transazioni" element={<StoricoTransazioniPage />} />
-          <Route path="/notifications" element={<NotificationsPage />} />
-        </Routes>
+        <AppRoutes />
       </Router>
     </AuthProvider>
   );

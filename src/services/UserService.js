@@ -3,7 +3,7 @@
 
 const DEV_MODE = true;
 const STORAGE_KEY = 'banca_users_data';
-const DATA_VERSION = 6; // ⚡ INCRÉMENTER CE NUMÉRO À CHAQUE MODIFICATION
+const DATA_VERSION = 8;
 
 class UserService {
   constructor() {
@@ -25,8 +25,6 @@ class UserService {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const storedVersion = localStorage.getItem(STORAGE_KEY + '_version');
-      
-      // ⚡ Vérifier la version - Si différente, réinitialiser automatiquement
       if (stored && storedVersion === String(DATA_VERSION)) {
         this.users = JSON.parse(stored);
         if (DEV_MODE) console.log('📦 Caricato da localStorage:', this.users.length, 'utenti');
@@ -69,28 +67,25 @@ class UserService {
         username: '12345678901', 
         password: '123456', 
         name: 'Mario Rossi',
-        nom: 'Mario Rossi', // Pour compatibilité avec GestionDocument
+        nom: 'Mario Rossi',
         firstName: 'Mario',
         lastName: 'Rossi',
         email: 'mario.rossi@example.it',
         phone: '+39 333 123 4567',
         accountNumber: 'IT60X0542811101000000123456',
-        numeroCompte: 'IT60 X054 2811 1010 0000 0123 456', // Pour GestionDocument
+        numeroCompte: 'IT60 X054 2811 1010 0000 0123 456',
         clientNumber: '001234567',
         country: 'Italia',
         city: 'Roma',
         location: 'Roma, Italia',
         manager: 'Marco Rossi',
         balance: 45000.00,
-        
-        // ✅ NOUVEAUX CHAMPS POUR GESTION DES DOCUMENTS
-        dateOuverture: '15/03/2020', // Date d'ouverture du compte
-        dateAttestation: new Date().toLocaleDateString('fr-FR'), // Date de l'attestation
+        dateOuverture: '15/03/2020',
+        dateAttestation: new Date().toLocaleDateString('fr-FR'),
         isBlocked: true,
-        dateBlocage: "12/09/2003", // null si pas bloqué, sinon date au format 'JJ/MM/AAAA'
+        dateBlocage: "12/09/2003",
         unlockFee: 5000.34,
         blockReason: null,
-        
         iban: 'IT60 X054 2811 1010 0000 0123 456',
         ibanObj: {
           iban: 'IT60 X054 2811 1010 0000 0123 456',
@@ -123,52 +118,24 @@ class UserService {
         ],
         transactions: [
           { 
-            id: 1, 
-            type: 'Ricezione', 
-            date: '2025-01-15T10:30:00', 
-            heure: '10:30',
-            reference: 'IT28ABC513', 
-            destinataire: 'Giovanni Verdi',
+            id: 1, type: 'Ricezione', date: '2025-01-15T10:30:00', heure: '10:30',
+            reference: 'IT28ABC513', destinataire: 'Giovanni Verdi',
             numeroDestinataire: 'IT28 X054 2811 1010 0000 0000 513',
-            amount: 2500.00,
-            montant: 2500.00,
-            frais: 0,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: true 
+            amount: 2500.00, montant: 2500.00, frais: 0, devise: '€',
+            statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: true 
           },
           { 
-            id: 2, 
-            type: 'Invio', 
-            date: '2025-01-18T14:15:00',
-            heure: '14:15', 
-            reference: 'CONAD ROMA', 
-            destinataire: 'CONAD Supermercato',
-            numeroDestinataire: '',
-            amount: 67.50,
-            montant: 67.50,
-            frais: 1.50,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: false 
+            id: 2, type: 'Invio', date: '2025-01-18T14:15:00', heure: '14:15',
+            reference: 'CONAD ROMA', destinataire: 'CONAD Supermercato',
+            numeroDestinataire: '', amount: 67.50, montant: 67.50, frais: 1.50,
+            devise: '€', statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: false 
           },
           { 
-            id: 3, 
-            type: 'Invio', 
-            date: '2025-01-20T09:45:00',
-            heure: '09:45', 
-            reference: 'IT76DEF657', 
-            destinataire: 'Laura Bianchi',
+            id: 3, type: 'Invio', date: '2025-01-20T09:45:00', heure: '09:45',
+            reference: 'IT76DEF657', destinataire: 'Laura Bianchi',
             numeroDestinataire: 'IT76 X054 2811 1010 0000 0000 657',
-            amount: 800.00,
-            montant: 800.00,
-            frais: 4.00,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: false 
+            amount: 800.00, montant: 800.00, frais: 4.00, devise: '€',
+            statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: false 
           }
         ],
         expenses: {
@@ -186,34 +153,30 @@ class UserService {
         virementProgramme: 2
       },
 
-
       { 
         id: 2, 
-        username: '12345678902', 
-        password: '123456', 
-        name: 'Mario Rossi',
-        nom: 'Mario Rossi', // Pour compatibilité avec GestionDocument
-        firstName: 'Mario',
-        lastName: 'Rossi',
-        email: 'mario.rossi@example.it',
+        username: '07014860451', 
+        password: '260823', 
+        name: 'Martinet Boudy',
+        nom: 'Boudy',
+        firstName: 'Martinet',
+        lastName: 'Boudy',
+        email: 'martinet.boudy@gmail.com',
         phone: '+39 333 123 4567',
         accountNumber: 'IT60X0542811101000000123456',
-        numeroCompte: 'IT60 X054 2811 1010 0000 0123 456', // Pour GestionDocument
+        numeroCompte: 'IT60 X054 2811 1010 0000 0123 456',
         clientNumber: '001234567',
         country: 'Italia',
         city: 'Roma',
         location: 'Roma, Italia',
         manager: 'Marco Rossi',
-        balance: 45000.00,
-        
-        // ✅ NOUVEAUX CHAMPS POUR GESTION DES DOCUMENTS
-        dateOuverture: '15/03/2020', // Date d'ouverture du compte
-        dateAttestation: new Date().toLocaleDateString('fr-FR'), // Date de l'attestation
+        balance: 750000.00,
+        dateOuverture: '15/03/2018',
+        dateAttestation: new Date().toLocaleDateString('fr-FR'),
         isBlocked: false,
-        dateBlocage: "12/09/2003", // null si pas bloqué, sinon date au format 'JJ/MM/AAAA'
-        unlockFee: 5000.34,
+        dateBlocage: null,
+        unlockFee: 30500.34, // ✅ Somme de déblocage pour cet utilisateur
         blockReason: null,
-        
         iban: 'IT60 X054 2811 1010 0000 0123 456',
         ibanObj: {
           iban: 'IT60 X054 2811 1010 0000 0123 456',
@@ -235,67 +198,39 @@ class UserService {
             weeklyPaymentLimit: 3000,
             internationalPaymentEnabled: true,
             issueDate: '12/2022',
-            cardHolder: 'MARIO ROSSI'
+            cardHolder: 'MARTINET BOUDY'
           }
         ],
         accounts: [
-          { id: 1, type: 'LIQUIDITÀ', number: 'N°*******3456', balance: 45000.00, currency: '€', icon: 'wallet' },
+          { id: 1, type: 'LIQUIDITÀ', number: 'N°*******3456', balance: 750000.00, currency: '€', icon: 'wallet' },
           { id: 2, type: 'ASSICURAZIONE', number: 'N°*******7891', balance: 2700.00, currency: '€', icon: 'shield' },
           { id: 3, type: 'ECONOMIA', number: 'N°*******5432', balance: 15000.00, currency: '€', icon: 'trending-up' },
           { id: 4, type: 'RISPARMIO', number: 'N°*******9876', balance: 2100.00, currency: '€', icon: 'piggybank' }
         ],
         transactions: [
           { 
-            id: 1, 
-            type: 'Ricezione', 
-            date: '2025-01-15T10:30:00', 
-            heure: '10:30',
-            reference: 'IT28ABC513', 
-            destinataire: 'Giovanni Verdi',
+            id: 1, type: 'Ricezione', date: '2019-01-15T10:30:00', heure: '10:30',
+            reference: 'IT28ABC513', destinataire: 'Giovanni Verdi',
             numeroDestinataire: 'IT28 X054 2811 1010 0000 0000 513',
-            amount: 2500.00,
-            montant: 2500.00,
-            frais: 0,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: true 
+            amount: 2500.00, montant: 2500.00, frais: 0, devise: '€',
+            statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: true 
           },
           { 
-            id: 2, 
-            type: 'Invio', 
-            date: '2025-01-18T14:15:00',
-            heure: '14:15', 
-            reference: 'CONAD ROMA', 
-            destinataire: 'CONAD Supermercato',
-            numeroDestinataire: '',
-            amount: 67.50,
-            montant: 67.50,
-            frais: 1.50,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: false 
+            id: 2, type: 'Invio', date: '2019-01-18T14:15:00', heure: '14:15',
+            reference: 'CONAD ROMA', destinataire: 'CONAD Supermercato',
+            numeroDestinataire: '', amount: 67.50, montant: 67.50, frais: 1.50,
+            devise: '€', statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: false 
           },
           { 
-            id: 3, 
-            type: 'Invio', 
-            date: '2025-01-20T09:45:00',
-            heure: '09:45', 
-            reference: 'IT76DEF657', 
-            destinataire: 'Laura Bianchi',
+            id: 3, type: 'Invio', date: '2020-01-20T09:45:00', heure: '09:45',
+            reference: 'IT76DEF657', destinataire: 'Laura Bianchi',
             numeroDestinataire: 'IT76 X054 2811 1010 0000 0000 657',
-            amount: 800.00,
-            montant: 800.00,
-            frais: 4.00,
-            devise: '€',
-            statut: 'Completata',
-            accountType: 'LIQUIDITÀ',
-            isCredit: false 
+            amount: 800.00, montant: 800.00, frais: 4.00, devise: '€',
+            statut: 'Completata', accountType: 'LIQUIDITÀ', isCredit: false 
           }
         ],
         expenses: {
-          month: 'Gennaio 2025',
+          month: 'Gennaio 2020',
           categories: [
             { name: 'Casa', value: 40, color: '#3B82F6' },
             { name: 'Alimentari', value: 30, color: '#10B981' },
@@ -311,9 +246,9 @@ class UserService {
     ];
   }
 
-  // ==================== MÉTHODES POUR BLOQUER/DÉBLOQUER ====================
+  // ==================== BLOQUER / DÉBLOQUER ====================
 
-  async blockAccount(userId, blockReason = 'Mesure conservatoire') {
+  async blockAccount(userId, blockReason = 'Verifica di sicurezza automatica') {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const userIndex = this.users.findIndex(u => u.id === userId);
@@ -322,36 +257,50 @@ class UserService {
           this.users[userIndex].isBlocked = true;
           this.users[userIndex].dateBlocage = dateBlocage;
           this.users[userIndex].blockReason = blockReason;
-          this.users[userIndex].unlockFee = 500; // Frais de déblocage
-          
+          // ✅ unlockFee NON modifié — on garde la valeur définie par utilisateur
+
           this.saveToStorage();
-          
-          // Mettre à jour localStorage aussi
+
           const { password, ...userWithoutPassword } = this.users[userIndex];
           localStorage.setItem('user', JSON.stringify(userWithoutPassword));
           window.dispatchEvent(new CustomEvent('userUpdated'));
-          
-          if (DEV_MODE) console.log('🔒 Compte bloqué:', dateBlocage);
+
+          if (DEV_MODE) console.log('🔒 Compte bloqué:', dateBlocage, '| unlockFee:', this.users[userIndex].unlockFee);
           resolve(userWithoutPassword);
-        } else { 
-          reject(new Error('Utente non trovato')); 
+        } else {
+          reject(new Error('Utente non trovato'));
         }
       }, 500);
     });
   }
 
-  // ==================== MÉTHODES POUR LES TRANSACTIONS ====================
+  async unlockAccount(userId) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const userIndex = this.users.findIndex(u => u.id === userId);
+        if (userIndex !== -1) {
+          this.users[userIndex].isBlocked = false;
+          this.users[userIndex].dateBlocage = null;
+          this.users[userIndex].unlockFee = 0;
+          this.users[userIndex].blockReason = null;
+          this.saveToStorage();
+          const { password, ...userWithoutPassword } = this.users[userIndex];
+          resolve(userWithoutPassword);
+        } else {
+          reject(new Error('Utente non trovato'));
+        }
+      }, 1000);
+    });
+  }
+
+  // ==================== TRANSACTIONS ====================
 
   async getUserTransactions(userId) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (DEV_MODE) console.log('📋 getUserTransactions:', userId);
         const user = this.users.find(u => u.id === userId);
-        if (!user) { 
-          reject(new Error('Utente non trovato')); 
-          return; 
-        }
-        // Retourner les transactions avec tous les détails nécessaires
+        if (!user) { reject(new Error('Utente non trovato')); return; }
         const transactions = (user.transactions || []).map(t => ({
           ...t,
           id: t.id || Date.now() + Math.random(),
@@ -367,7 +316,6 @@ class UserService {
           statut: t.statut || 'Completata',
           accountType: t.accountType || 'LIQUIDITÀ'
         }));
-        
         if (DEV_MODE) console.log('✅ Trovate', transactions.length, 'transazioni');
         resolve(transactions);
       }, 300);
@@ -379,15 +327,10 @@ class UserService {
       setTimeout(() => {
         if (DEV_MODE) console.log('📊 getTransactionStats:', userId);
         const user = this.users.find(u => u.id === userId);
-        if (!user) { 
-          reject(new Error('Utente non trovato')); 
-          return; 
-        }
-        
+        if (!user) { reject(new Error('Utente non trovato')); return; }
         const transactions = user.transactions || [];
         const reussies = transactions.filter(t => t.statut === 'Completata').length;
         const echouees = transactions.filter(t => t.statut === 'Fallita').length;
-        
         const stats = { reussies, echouees };
         if (DEV_MODE) console.log('✅ Statistiche:', stats);
         resolve(stats);
@@ -400,22 +343,15 @@ class UserService {
       setTimeout(() => {
         if (DEV_MODE) console.log('🔍 searchTransactions:', userId, searchTerm);
         const user = this.users.find(u => u.id === userId);
-        if (!user) { 
-          reject(new Error('Utente non trovato')); 
-          return; 
-        }
-        
+        if (!user) { reject(new Error('Utente non trovato')); return; }
         const transactions = user.transactions || [];
         const term = searchTerm.toLowerCase();
-        
-        const results = transactions.filter(t => {
-          return (
-            (t.destinataire && t.destinataire.toLowerCase().includes(term)) ||
-            (t.reference && t.reference.toLowerCase().includes(term)) ||
-            (t.type && t.type.toLowerCase().includes(term)) ||
-            (t.numeroDestinataire && t.numeroDestinataire.toLowerCase().includes(term))
-          );
-        }).map(t => ({
+        const results = transactions.filter(t =>
+          (t.destinataire && t.destinataire.toLowerCase().includes(term)) ||
+          (t.reference && t.reference.toLowerCase().includes(term)) ||
+          (t.type && t.type.toLowerCase().includes(term)) ||
+          (t.numeroDestinataire && t.numeroDestinataire.toLowerCase().includes(term))
+        ).map(t => ({
           ...t,
           id: t.id || Date.now() + Math.random(),
           type: t.type || 'Altro',
@@ -430,7 +366,6 @@ class UserService {
           statut: t.statut || 'Completata',
           accountType: t.accountType || 'LIQUIDITÀ'
         }));
-        
         if (DEV_MODE) console.log('✅ Trovati', results.length, 'risultati per:', searchTerm);
         resolve(results);
       }, 400);
@@ -441,7 +376,6 @@ class UserService {
     try {
       const userStr = localStorage.getItem('user');
       if (!userStr) return null;
-      
       const user = JSON.parse(userStr);
       if (DEV_MODE) console.log('👤 getCurrentUser:', user.name);
       return user;
@@ -460,17 +394,15 @@ class UserService {
         const user = this.users.find(u => u.id === userId);
         if (!user) { reject(new Error('Utente non trovato')); return; }
         if (user.balance < transferData.amount) { reject(new Error('Saldo insufficiente')); return; }
-        
+
         user.balance -= transferData.amount;
-        
-        // Mettre à jour le compte correspondant
         const accountType = transferData.accountType || 'LIQUIDITÀ';
         const account = user.accounts.find(acc => acc.type === accountType);
         if (account) account.balance -= transferData.amount;
-        
+
         const now = new Date();
-        const newTransaction = { 
-          id: Date.now(), 
+        const newTransaction = {
+          id: Date.now(),
           type: 'Invio',
           date: now.toISOString(),
           heure: now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
@@ -488,18 +420,16 @@ class UserService {
           accountType: accountType,
           isCredit: false
         };
-        
+
         user.transactions.unshift(newTransaction);
         this.saveToStorage();
-        
-        // Mettre à jour dans localStorage aussi
         localStorage.setItem('user', JSON.stringify(user));
         window.dispatchEvent(new CustomEvent('userUpdated'));
-        
+
         if (DEV_MODE) console.log('✅ Nuovo saldo:', user.balance);
-        resolve({ 
-          success: true, 
-          newBalance: user.balance, 
+        resolve({
+          success: true,
+          newBalance: user.balance,
           transaction: newTransaction,
           ...newTransaction
         });
@@ -511,13 +441,13 @@ class UserService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (!username || !password) { reject(new Error('Identificativo e password richiesti')); return; }
-        if (!/^\d{11}$/.test(username)) { reject(new Error('L\'identificativo deve contenere 11 cifre')); return; }
+        if (!/^\d{11}$/.test(username)) { reject(new Error("L'identificativo deve contenere 11 cifre")); return; }
         const user = this.users.find(u => u.username === username && u.password === password);
-        if (user) { 
-          const { password, ...userWithoutPassword } = user; 
-          resolve(userWithoutPassword); 
-        } else { 
-          reject(new Error('Identificativo o password non corretti')); 
+        if (user) {
+          const { password, ...userWithoutPassword } = user;
+          resolve(userWithoutPassword);
+        } else {
+          reject(new Error('Identificativo o password non corretti'));
         }
       }, 1000);
     });
@@ -528,12 +458,12 @@ class UserService {
       setTimeout(() => {
         if (DEV_MODE) console.log('🔍 getUserById:', userId);
         const user = this.users.find(u => u.id === userId);
-        if (user) { 
+        if (user) {
           const { password, ...userWithoutPassword } = user;
           if (DEV_MODE) console.log('✅ Utente trovato:', userWithoutPassword.name, 'Saldo:', userWithoutPassword.balance);
-          resolve(userWithoutPassword); 
-        } else { 
-          reject(new Error('Utente non trovato')); 
+          resolve(userWithoutPassword);
+        } else {
+          reject(new Error('Utente non trovato'));
         }
       }, 100);
     });
@@ -543,7 +473,7 @@ class UserService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         const user = this.users.find(u => u.id === userId);
-        if (user) resolve(user.cards || []); 
+        if (user) resolve(user.cards || []);
         else reject(new Error('Utente non trovato'));
       }, 500);
     });
@@ -599,43 +529,24 @@ class UserService {
         if (!user) { reject(new Error('Utente non trovato')); return; }
         const newCardId = user.cards.length + 1;
         const cardNumber = `5412 ${String(userId).padStart(4, '0')} ${Math.floor(Math.random() * 10000).toString().padStart(4, '0')} ${String(1234 + userId + newCardId).padStart(4, '0')}`;
-        const newCard = { 
-          id: newCardId, 
-          type: cardType, 
-          cardNumber, 
-          maskedNumber: `5412 **** **** ${cardNumber.slice(-4)}`, 
-          cvv: Math.floor(100 + Math.random() * 900).toString(), 
-          expiryDate: '12/29', 
-          status: 'active', 
-          dailyWithdrawalLimit: 500, 
-          weeklyPaymentLimit: 3000, 
-          internationalPaymentEnabled: false, 
-          issueDate: new Date().toLocaleDateString('it-IT', { month: '2-digit', year: 'numeric' }), 
-          cardHolder: user.name.toUpperCase() 
+        const newCard = {
+          id: newCardId,
+          type: cardType,
+          cardNumber,
+          maskedNumber: `5412 **** **** ${cardNumber.slice(-4)}`,
+          cvv: Math.floor(100 + Math.random() * 900).toString(),
+          expiryDate: '12/29',
+          status: 'active',
+          dailyWithdrawalLimit: 500,
+          weeklyPaymentLimit: 3000,
+          internationalPaymentEnabled: false,
+          issueDate: new Date().toLocaleDateString('it-IT', { month: '2-digit', year: 'numeric' }),
+          cardHolder: user.name.toUpperCase()
         };
         user.cards.push(newCard);
         this.saveToStorage();
         resolve(newCard);
       }, 2000);
-    });
-  }
-
-  async unlockAccount(userId) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const userIndex = this.users.findIndex(u => u.id === userId);
-        if (userIndex !== -1) {
-          this.users[userIndex].isBlocked = false;
-          this.users[userIndex].dateBlocage = null; // ✅ Réinitialiser la date de blocage
-          this.users[userIndex].unlockFee = 0;
-          this.users[userIndex].blockReason = null;
-          this.saveToStorage();
-          const { password, ...userWithoutPassword } = this.users[userIndex];
-          resolve(userWithoutPassword);
-        } else { 
-          reject(new Error('Utente non trovato')); 
-        }
-      }, 1000);
     });
   }
 
@@ -648,8 +559,8 @@ class UserService {
           this.saveToStorage();
           const { password, ...userWithoutPassword } = this.users[userIndex];
           resolve(userWithoutPassword);
-        } else { 
-          reject(new Error('Utente non trovato')); 
+        } else {
+          reject(new Error('Utente non trovato'));
         }
       }, 500);
     });
@@ -661,9 +572,9 @@ class UserService {
         const user = this.users.find(u => u.id === userId);
         if (!user) { reject(new Error('Utente non trovato')); return; }
         if (user.password !== oldPassword) { reject(new Error('Vecchia password non corretta')); return; }
-        if (!/^\d+$/.test(newPassword) || newPassword.length < 6) { 
-          reject(new Error('La password deve contenere almeno 6 cifre')); 
-          return; 
+        if (!/^\d+$/.test(newPassword) || newPassword.length < 6) {
+          reject(new Error('La password deve contenere almeno 6 cifre'));
+          return;
         }
         user.password = newPassword;
         this.saveToStorage();
@@ -676,7 +587,7 @@ class UserService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (!/^\d{11}$/.test(userData.username)) {
-          reject(new Error('L\'identificativo deve contenere 11 cifre'));
+          reject(new Error("L'identificativo deve contenere 11 cifre"));
           return;
         }
         if (!/^\d+$/.test(userData.password) || userData.password.length < 6) {
@@ -692,15 +603,15 @@ class UserService {
         const nameParts = userData.name.split(' ');
         const firstName = nameParts[0] || userData.name;
         const lastName = nameParts.slice(1).join(' ') || '';
-        
+
         const newUser = {
           id: newUserId,
           username: userData.username,
           password: userData.password,
           name: userData.name,
           nom: userData.name,
-          firstName: firstName,
-          lastName: lastName,
+          firstName,
+          lastName,
           email: userData.email,
           phone: userData.phone || '',
           country: userData.country || '',
@@ -711,15 +622,12 @@ class UserService {
           clientNumber: String(newUserId).padStart(9, '0'),
           manager: this.managers[Math.floor(Math.random() * this.managers.length)],
           balance: 0,
-          
-          // ✅ Champs pour documents
           dateOuverture: new Date().toLocaleDateString('fr-FR'),
           dateAttestation: new Date().toLocaleDateString('fr-FR'),
           isBlocked: false,
           dateBlocage: null,
           unlockFee: 0,
           blockReason: null,
-          
           iban: `IT${Math.floor(Math.random() * 90) + 10} X054 2811 1010 ${String(Math.floor(Math.random() * 1000000000000)).padStart(12, '0')}`,
           ibanObj: {
             iban: `IT${Math.floor(Math.random() * 90) + 10} X054 2811 1010 ${String(Math.floor(Math.random() * 1000000000000)).padStart(12, '0')}`,

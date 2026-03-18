@@ -8,26 +8,29 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Charger l'utilisateur au démarrage
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('user');
+      const token = localStorage.getItem('token');
+      if (storedUser && token) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (e) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false); // ✅ Toujours libérer le loading
     }
-    setLoading(false);
   }, []);
 
-  // ⚡⚡⚡ CRITIQUE : Écouter les mises à jour
   useEffect(() => {
     const handleUserUpdate = () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
-        console.log('🔄 User mis à jour:', parsed.name, 'Solde:', parsed.balance);
-        setUser({ ...parsed, _timestamp: Date.now() }); // Force re-render
+        setUser({ ...parsed, _timestamp: Date.now() });
       }
     };
-
     window.addEventListener('userUpdated', handleUserUpdate);
     return () => window.removeEventListener('userUpdated', handleUserUpdate);
   }, []);
@@ -35,12 +38,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     const userData = await UserService.authenticate(username, password);
     const token = btoa(JSON.stringify({ userId: userData.id, timestamp: Date.now() }));
-    
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', token);
-    window.dispatchEvent(new CustomEvent('userUpdated'));
-    
     return { success: true, user: userData };
   };
 
@@ -48,31 +48,34 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    window.dispatchEvent(new CustomEvent('userUpdated'));
   };
 
   const register = async (userData) => {
     const newUser = await UserService.createUser(userData);
     const token = btoa(JSON.stringify({ userId: newUser.id, timestamp: Date.now() }));
-    
     setUser(newUser);
     localStorage.setItem('user', JSON.stringify(newUser));
     localStorage.setItem('token', token);
-    window.dispatchEvent(new CustomEvent('userUpdated'));
-    
     return { success: true, user: newUser };
   };
 
-  // ⚡ Mise à jour du user (pour les virements)
   const updateUser = (updatedUserData) => {
-    console.log('💾 Mise à jour user:', updatedUserData.name, 'Solde:', updatedUserData.balance);
-    
     setUser({ ...updatedUserData, _timestamp: Date.now() });
     localStorage.setItem('user', JSON.stringify(updatedUserData));
-    window.dispatchEvent(new CustomEvent('userUpdated'));
-    
     return { success: true, user: updatedUserData };
   };
+
+  // ✅ Pendant le loading, on ne rend rien — évite la déconnexion au refresh
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
 
   const value = {
     user,
@@ -89,8 +92,6 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };
