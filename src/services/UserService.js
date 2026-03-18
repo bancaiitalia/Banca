@@ -3,7 +3,7 @@
 
 const DEV_MODE = true;
 const STORAGE_KEY = 'banca_users_data';
-const DATA_VERSION = 8;
+const DATA_VERSION = 9; // ⚡ Incrémenté
 
 class UserService {
   constructor() {
@@ -81,9 +81,9 @@ class UserService {
         manager: 'Marco Rossi',
         balance: 45000.00,
         dateOuverture: '15/03/2020',
-        dateAttestation: new Date().toLocaleDateString('fr-FR'),
+        dateAttestation: '15/03/2020', // ✅ Date fixe
         isBlocked: true,
-        dateBlocage: "12/09/2003",
+        dateBlocage: '12/09/2003',
         unlockFee: 5000.34,
         blockReason: null,
         iban: 'IT60 X054 2811 1010 0000 0123 456',
@@ -172,10 +172,10 @@ class UserService {
         manager: 'Marco Rossi',
         balance: 750000.00,
         dateOuverture: '15/03/2018',
-        dateAttestation: new Date().toLocaleDateString('fr-FR'),
+        dateAttestation: '15/03/2018', // ✅ Date fixe
         isBlocked: false,
         dateBlocage: null,
-        unlockFee: 30500.34, // ✅ Somme de déblocage pour cet utilisateur
+        unlockFee: 30500.34,
         blockReason: null,
         iban: 'IT60 X054 2811 1010 0000 0123 456',
         ibanObj: {
